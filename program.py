@@ -1,6 +1,11 @@
-from Karatsuba_Multiply import *
+from KaratsubaMultiply import *
+from MultiplyException import *
+
 while True:
-    a = int(input('Введите первое число: '))
-    b = int(input('Введите второе число: '))
-    ans = Karatsuba_Multiply().multiply(a, b)
-    print (ans)
+    try:
+        a = check_number((input('Enter first number: ')))
+        b = check_number((input('Enter second number: ')))
+        ans = KaratsubaMultiply().multiply(a, b)
+        print(ans)
+    except MultiplyException as err:
+        print(err, err.arg, '(', err.type, ')')
