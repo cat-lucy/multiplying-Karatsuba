@@ -8,7 +8,7 @@ def check_number(number):
             err.arg = number
             err.type = type(number)
             raise err
-        return int(number)
+    return int(number)
 
 
 class MultiplyException(Exception):
