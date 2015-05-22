@@ -1,3 +1,6 @@
+import itertools
+
+
 class KaratsubaMultiply:
     def __init__(self):
         self.n1 = -1
@@ -5,18 +8,19 @@ class KaratsubaMultiply:
         self.num = []
 
     def multiply(self, a, b):
-        if a < 10 or b < 10:
+        if abs(a) < 10 or abs(b) < 10:
             return a * b
         if self.breaking(a, b, self.check_bit):
             return 0
-        n1 = self.n1
-        n2 = self.n2
-        ab = self.num
-        x1 = self.multiply(ab[0], ab[2])
-        x2 = self.multiply(ab[0], ab[3])
-        x3 = self.multiply(ab[1], ab[2])
-        x4 = self.multiply(ab[1], ab[3])
-        return (x1 << (int(n1 / 2) + int(n2 / 2))) + (x2 << int(n1 / 2)) + (x3 << int(n2 / 2)) + x4
+        x = [0, 0, 0, 0]
+        k = 0
+        for i in itertools.starmap(self.multiply,
+                                   [(self.num[0], self.num[2]), (self.num[0], self.num[3]), (self.num[1], self.num[2]),
+                                    (self.num[1], self.num[3])]):
+            x[k] = i
+            k += 1
+        return (x[0] << (int(self.n1 / 2) + int(self.n2 / 2))) + (x[1] << int(self.n1 / 2)) + (
+            x[2] << int(self.n2 / 2)) + x[3]
 
     def breaking(self, a, b, func):
         if func(a, b):
