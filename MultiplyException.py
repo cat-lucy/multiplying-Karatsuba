@@ -3,7 +3,7 @@ def check_number(number):
         err = MultiplyException('Empty input')
         raise err
     for i in range(len(number)):
-        if number[i] not in '0123456789':
+        if number[i] not in '0123456789' and number[0] != '-':
             err = MultiplyException('Invalid Input :')
             err.arg = number
             err.type = type(number)
