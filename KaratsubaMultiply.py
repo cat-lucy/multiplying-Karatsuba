@@ -3,47 +3,43 @@ import itertools
 
 class KaratsubaMultiply:
     def __init__(self):
-        self.n1 = -1
-        self.n2 = -1
+        self.n = [0, 0]
         self.num = []
 
     def multiply(self, a, b):
         if abs(a) < 10 or abs(b) < 10:
             return a * b
-        if self.breaking(a, b, self.check_bit):
+        if self.breaking(a, b):
             return 0
-        x = [0, 0, 0, 0]
-        k = 0
-        for i in itertools.starmap(self.multiply,
-                                   [(self.num[0], self.num[2]), (self.num[0], self.num[3]), (self.num[1], self.num[2]),
-                                    (self.num[1], self.num[3])]):
-            x[k] = i
-            k += 1
-        return (x[0] << (int(self.n1 / 2) + int(self.n2 / 2))) + (x[1] << int(self.n1 / 2)) + (
-            x[2] << int(self.n2 / 2)) + x[3]
+        n1 = self.n[0]
+        n2 = self.n[1]
+        num = self.num
+        [num[0], num[1], num[2], num[3]] = itertools.starmap(self.multiply,
+                                                             [(num[0], num[2]), (num[0], num[3]), (num[1], num[2]),
+                                                              (num[1], num[3])])
+        return ((num[0] << (int(n1 / 2) + int(n2 / 2))) + (num[1] << int(n1 / 2)) + (
+            num[2] << int(n2 / 2)) + num[3])
 
-    def breaking(self, a, b, func):
-        if func(a, b):
+    def breaking(self, a, b):
+        if self.check_bit(a, b):
             return True
-        a1 = a >> int(self.n1 / 2)
-        a2 = a - (a1 << int(self.n1 / 2))
-        b1 = b >> int(self.n2 / 2)
-        b2 = b - (b1 << int(self.n2 / 2))
+        n1div = int(self.n[0] / 2)
+        n2div = int(self.n[1] / 2)
+        a1 = a >> n1div
+        a2 = a - (a1 << n1div)
+        b1 = b >> n2div
+        b2 = b - (b1 << n2div)
         self.num = [a1, a2, b1, b2]
         return False
 
     def check_bit(self, a, b):
-        self.n1 = -1
-        self.n2 = -1
-        at = abs(a)
-        while at > 0:
-            self.n1 += 1
-            at >>= 1
-        bt = abs(b)
-        while bt > 0:
-            self.n2 += 1
-            bt >>= 1
-        if self.n1 == 0 or self.n2 == 0:
-            return True
-        else:
-            return False
+        def f(num):
+            if num > 0:
+                num >>= 1
+                return 1 + f(num)
+            else:
+                return 0
+
+        [at, bt] = map(abs, [a, b])
+        [self.n[0], self.n[1]] = map(f, [at, bt])
+        return self.n[0] == 0 or self.n[1] == 0
